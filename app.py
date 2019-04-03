@@ -1,0 +1,89 @@
+import os
+
+import pandas as pd
+import numpy as np
+
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+
+from flask import Flask, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+
+
+#################################################
+# Database Setup
+#################################################
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/energy_db.sqlite" 
+db = SQLAlchemy(app)
+
+# reflect an existing database into a new model
+Base = automap_base()
+# reflect the tables
+Base.prepare(db.engine, reflect=True)
+
+print(Base.classes.keys())
+
+# Save references to each table
+country = Base.classes.TEP_countries
+region = Base.classes.TEP_regions
+
+
+@app.route("/")
+def index():
+    """Return the homepage."""
+    return render_template("index.html")
+
+
+@app.route("/countries")
+def country_names():
+    """Return a list of country names."""
+    # Use Pandas to perform the sql query
+    stmt = db.session.query(country).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+
+    # Return a list of the column names (country names)
+    return jsonify(list(df.columns)[1:])
+
+@app.route("/regions")
+def region_names():
+    """Return a list of region names."""
+
+    # Use Pandas to perform the sql query
+    stmt = db.session.query(region).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+
+    # Return a list of the column names (region names)
+    return jsonify(list(df.columns)[1:])
+
+
+
+@app.route("/countries/<year>")
+def countries(year):
+    stmt = db.session.query(country).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+    df1 = df.loc[lambda df: df['Year'] == year]
+    year_data = df1.drop(['Year'], axis=1)
+    # Format the data to send as json
+    country_data = {
+        year : year_data.values.tolist()
+    }
+    return jsonify(country_data)
+
+@app.route("/regions/<year>")
+def regions(year):
+    stmt = db.session.query(region).statement
+    df = pd.read_sql_query(stmt, db.session.bind)
+    df1 = df.loc[lambda df: df['Year'] == year]
+    year_data = df1.drop(['Year'], axis=1)
+    # Format the data to send as json
+    region_data = {
+        year : year_data.values.tolist()
+    }
+    return jsonify(region_data)
+
+if __name__ == "__main__":
+    app.run()
