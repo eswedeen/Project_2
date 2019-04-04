@@ -69,7 +69,7 @@ def countries(year):
     year_data = df1.drop(['Year'], axis=1)
     # Format the data to send as json
     country_data = {
-        year : year_data.values.tolist()
+        "yearKey" : year_data.values.tolist()
     }
     return jsonify(country_data)
 
@@ -81,7 +81,7 @@ def regions(year):
     year_data = df1.drop(['Year'], axis=1)
     # Format the data to send as json
     region_data = {
-        year : year_data.values.tolist()
+        "yearKey" : year_data.values.tolist()
     }
     return jsonify(region_data)
 
