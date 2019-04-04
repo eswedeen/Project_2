@@ -20,6 +20,7 @@ function init() {
     d3.json(myGeoJSONPath, function(data) {
         //Load Geo JSON Data and Build Map
         buildMap(data);
+        buildCharts();
     }); 
 }
 
@@ -62,9 +63,13 @@ function buildMap(data) {
 };
 
 // FUNCTION: To build charts
-// function buildCharts() {
-//     d3.json("/countries/")
-// }
+function buildCharts() {
+    // get year value from dropdown using d3
+    var year = "1990"
+    d3.json(`/countries/1990`).then(function(data) {
+        console.log(data);
+    });
+}
 
 // Initialize Dashboard
 init();
