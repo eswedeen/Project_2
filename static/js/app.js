@@ -65,9 +65,13 @@ function buildMap(data) {
 // FUNCTION: To build charts
 function buildCharts() {
     // get year value from dropdown using d3
-    var year = "1990"
-    d3.json(`/countries/1990`).then(function(data) {
+    var year = 1990
+    d3.json(`/countries/${year}`, function(data) {
+        //yearData = data.year;
+        console.log(year);
         console.log(data);
+        console.log(data.year);
+
     });
 }
 
