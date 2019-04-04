@@ -6,7 +6,7 @@ var defaultZoom = 4;
 // Endpoints for Country and Region JSON Data
 
 // geoJSON data & styling
-var myGeoJSONPath = '/resources/mymap.geo.json';
+var myGeoJSONPath = '/geojson';
 var myCustomStyle = {
     stroke: true,
     fill: true,
@@ -14,11 +14,14 @@ var myCustomStyle = {
     fillOpacity: 0.25    
 }
 
-//Get Geo JSON Data
-d3.json(myGeoJSONPath, function(data) {
-    //Load Geo JSON Data and Build Map
-    buildMap(data);
-});
+// FUNCTION: To initialize dashboard
+function init() {
+    //Get Geo JSON Data
+    d3.json(myGeoJSONPath, function(data) {
+        //Load Geo JSON Data and Build Map
+        buildMap(data);
+    }); 
+}
 
 // FUNCTION: buildMap
 function buildMap(data) {
@@ -58,6 +61,13 @@ function buildMap(data) {
     
 };
 
+// FUNCTION: To build charts
+// function buildCharts() {
+//     d3.json("/countries/")
+// }
+
+// Initialize Dashboard
+init();
 
 
 
