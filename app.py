@@ -110,8 +110,7 @@ def regions(year):
 
 def years():
     year_list = range(1990,2017)
-    years = {"{0}".format(year) for year in year_list}
-
+    years = ["{0}".format(year) for year in year_list]
     return jsonify(years)
 
 
