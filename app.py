@@ -107,5 +107,14 @@ def regions(year):
 
     return jsonify(region_data)
 
+@app.route("/years")
+
+def years():
+    year_list = range(1990,2017)
+    years = ["{0}".format(year) for year in year_list]
+
+    return years
+
+
 if __name__ == "__main__":
     app.run()
