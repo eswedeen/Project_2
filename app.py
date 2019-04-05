@@ -115,5 +115,22 @@ def years():
     return jsonify(years)
 
 
+@app.route("/geojson")
+
+def geojson():
+
+    parent_path = '\\'.join(os.path.realpath(__file__).split('\\')[:-1])
+
+    file_path = os.path.join(parent_path, 'resources\\mymap.geo.json')
+
+    with open(file_path, 'r') as file_data:
+
+        json_data = json.load(file_data)
+
+
+
+    return jsonify(json_data)
+
+
 if __name__ == "__main__":
     app.run()
