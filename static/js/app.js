@@ -20,7 +20,9 @@ function init() {
     d3.json(myGeoJSONPath, function(data) {
         //Load Geo JSON Data and Build Map
         buildMap(data);
-        buildCharts();
+        buildPie();
+        buildBar();
+        
     }); 
 }
 
@@ -30,7 +32,7 @@ function buildMap(data) {
     var worldMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
-        id: "mapbox.dark",
+        id: "mapbox.light",
         accessToken: API_KEY
     });
 
@@ -63,27 +65,74 @@ function buildMap(data) {
 };
 
 // FUNCTION: To build charts
-function buildCharts() {
+function buildPie() {
+    // get year value from dropdown using d3
+    var year = 1990;
+    d3.json(`/regions/${year}`, function(data) {
+        
+        var TEPList = data.yearKey[0];
+        console.log(year);
+        console.log(TEPList);
+
+        d3.json(`/regions`, function(regions) {
+            console.log(regions);
+            console.log(TEPList);
+
+            var pieTrace = {
+                values: TEPList,
+                labels: regions,
+                hoverinfo: regions,
+                type: 'pie'
+              };
+          
+              var pieData = [pieTrace];
+          
+              var pieLayout = {
+                 title: "Total Energy Production (MToE) "
+              }
+          
+              Plotly.newPlot('region-pie', pieData, pieLayout);
+
+        });
+        
+    });
+}
+
+function buildBar() {
     // get year value from dropdown using d3
     var year = 1990;
     d3.json(`/countries/${year}`, function(data) {
-        console.log(year);
-        console.log(data);
-        console.log(data.yearKey);
-        console.log(data.yearKey[0]);
-        console.log(data.yearKey[0][0]);
-
-        var TEPList = data.yearKey[0];
-        console.log(TEPList);
-    
         
+        var TEPList = data.yearKey[0];
 
+        console.log(year);
+        console.log(data);  
+        console.log(TEPList);
+
+        d3.json(`/countries`, function(countries) {
+            console.log(countries);
+            console.log(TEPList);
+
+            var barTrace = {
+                x: countries,
+                y: TEPList,
+                text: countries,
+                
+                type: "bar",
+              };
+          
+              var barData = [barTrace];
+          
+              var barLayout = {
+                 title: "Total Electric Power Produced"
+              }
+          
+              Plotly.newPlot('country-bar', barData, barLayout);
+
+        });
+        
     });
 }
 
 // Initialize Dashboard
 init();
-
-
-
-
