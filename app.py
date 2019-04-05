@@ -112,7 +112,7 @@ def years():
     year_list = range(1990,2017)
     years = {"{0}".format(year) for year in year_list}
 
-    return json.dumps(years)
+    return jsonify(years)
 
 
 if __name__ == "__main__":
