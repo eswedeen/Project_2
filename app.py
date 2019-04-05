@@ -48,6 +48,7 @@ def country_names():
     # Return a list of the column names (country names)
     return jsonify(list(df.columns)[1:])
 
+
 @app.route("/regions")
 def region_names():
     """Return a list of region names."""
@@ -94,6 +95,16 @@ def geojson():
         json_data = json.load(file_data)
 
     return jsonify(json_data)
+
+@app.route("/years")
+
+def years():
+
+    year_list = range(1990,2017)
+
+    years = ["{0}".format(year) for year in year_list]
+
+    return jsonify(years)
 
 if __name__ == "__main__":
     app.run()
