@@ -62,18 +62,6 @@ def region_names():
 
 
 @app.route("/countries/<year>")
-def countries(year):
-    stmt = db.session.query(country).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
-    df1 = df.loc[lambda df: df['Year'] == year]
-    year_data = df1.drop(['Year'], axis=1)
-    # Format the data to send as json
-    country_data = {
-        "year" : year_data.values.tolist()
-    }
-    return jsonify(country_data)
-
-@app.route("/countries/<year>")
 
 def countries(year):
 
