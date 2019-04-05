@@ -49,7 +49,7 @@ function buildMap(data) {
     var worldMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
-        id: "mapbox.dark",
+        id: "mapbox.light",
         accessToken: API_KEY
     });
 
@@ -121,8 +121,29 @@ function buildCharts() {
 }
 
 
+        console.log(year);
+        console.log(data);  
+        console.log(TEPList);
 
+        d3.json(`/countries`, function(countries) {
+            console.log(countries);
+            console.log(TEPList);
 
+            var barTrace = {
+                x: countries,
+                y: TEPList,
+                text: countries,
+                
+                type: "bar",
+              };
+          
+              var barData = [barTrace];
+          
+              var barLayout = {
+                 title: "Total Electric Power Produced"
+              }
+          
+              Plotly.newPlot('country-bar', barData, barLayout);
 
 
 

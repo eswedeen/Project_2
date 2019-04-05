@@ -48,6 +48,7 @@ def country_names():
     # Return a list of the column names (country names)
     return jsonify(list(df.columns)[1:])
 
+
 @app.route("/regions")
 def region_names():
     """Return a list of region names."""
@@ -100,7 +101,6 @@ def regions(year):
     # Format the data to send as json
 
     region_data = {
-
         "yearKey" : year_data.values.tolist()
     }
 
@@ -109,7 +109,7 @@ def regions(year):
 @app.route("/years")
 
 def years():
-    year_list = range(1990,2017)
+    year_list = range(1990,2018)
     years = ["{0}".format(year) for year in year_list]
     return jsonify(years)
 
