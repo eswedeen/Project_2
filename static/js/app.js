@@ -11,7 +11,7 @@ function init() {
     buildMap(data);
     buildPie();
     buildBar();
-        
+    chooseColor(); 
     });
 }
 
@@ -74,22 +74,57 @@ function geoData() {
     });
 }
 
-// FUNCTION: Coloring
+// FUNCTION: Coloring for country geojson fill
 function chooseColor() {
+
+//     var countryList = [];
+//     var geoNameList = [];
+//     var TEPList = [];
+//     var year = 1990;
+
+//     // d3.json("/countries", function(countries) {
+//     //     console.log(countries);
+
+//     // });
+
+//     d3.json("/geojson", function(geoNameList, geoData) {
+//         geoData.features.forEach(function(geoNameList, feature) {
+            
+//             var geoName = feature.properties.name;
+//             geoNameList.push(geoName);
+//             console.log(geoNameList);       
+//         });
+//     });
+
+//     d3.json(`/countries/${year}`, function(data) {
+//        console.log(data);    
+//         var TEPValues = data.yearKey[0];
+            
+        
+//     });
+        
+//     // list of country names from TEP data
+//     console.log(countryList);
+
+//     // list of country names from geojson data
+//     console.log(geoNameList);
+
+//     // list of TEP values for each country
+//     console.log(TEPList);
+    
+// }
     // get TEPList max
     // divide max by 10
-    // for i = 0 to 9
-        // if TEPList/10*(i) < x < TEPList/10*(i+1) 
-    var TEPMax 
-    var colorList = [#ffffe0, #ffe3af, #ffc58a, #ffa474, #fa8266, #ed645c, #db4551, #c52940, #aa0e27, #8b0000];
+ 
+    // var TEPMax 
+    // var colorList = [#ffffe0, #ffe3af, #ffc58a, #ffa474, #fa8266, #ed645c, #db4551, #c52940, #aa0e27, #8b0000];
     
-    for (var i = 0; i++; 9) {
-        // case TEPMax*i/10 < TEPList[i] < TEPMax*(i+1)/10:
-        case ( TEPList[i] > (TEPMax*i/10) && TEPList[i] < TEPMax*(i+1)/10:
-            return colorList[i] ;
-    }
+    // for (var i = 0; i++; 9) {
+    //     // case TEPMax*i/10 < TEPList[i] < TEPMax*(i+1)/10:
+    //     case ( TEPList[i] > (TEPMax*i/10) && TEPList[i] < TEPMax*(i+1)/10:
+    //         return colorList[i];
+    // }
 
-}
 
 // FUNCTION: To build charts
 function buildPie() {
@@ -98,12 +133,12 @@ function buildPie() {
     d3.json(`/regions/${year}`, function(data) {
         
         var TEPList = data.yearKey[0];
-        console.log(year);
-        console.log(TEPList);
+        // console.log(year);
+        // console.log(TEPList);
 
         d3.json(`/regions`, function(regions) {
-            console.log(regions);
-            console.log(TEPList);
+            // console.log(regions);
+            // console.log(TEPList);
 
             var pieTrace = {
                 values: TEPList,
@@ -132,13 +167,13 @@ function buildBar() {
         
         var TEPList = data.yearKey[0];
 
-        console.log(year);
-        console.log(data);  
-        console.log(TEPList);
+        // console.log(year);
+        // console.log(data);  
+        // console.log(TEPList);
 
         d3.json(`/countries`, function(countries) {
-            console.log(countries);
-            console.log(TEPList);
+            // console.log(countries);
+            // console.log(TEPList);
 
             var barTrace = {
                 x: countries,
