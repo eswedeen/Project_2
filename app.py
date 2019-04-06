@@ -96,6 +96,9 @@ def regions(year):
 
     df1 = df.loc[lambda df: df['Year'] == year]
 
+    df1 = df1.drop(['World','America','G7','OECD','EuropeanUnion','BRICS','CIS'], axis=1)
+
+
     year_data = df1.drop(['Year'], axis=1)
 
     # Format the data to send as json
