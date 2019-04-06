@@ -56,10 +56,10 @@ def region_names():
     # Use Pandas to perform the sql query
     stmt = db.session.query(region).statement
     df = pd.read_sql_query(stmt, db.session.bind)
-
-    # Return a list of the column names (region names)
-    return jsonify(list(df.columns)[1:])
-
+    regions = list(df.columns)[1:]
+    reg = list(filter(lambda x: x not in ('World','America','G7','OECD','EuropeanUnion','BRICS','CIS'),regions))
+        # Return a list of the column names (region names)
+    return jsonify(reg) 
 
 
 @app.route("/countries/<year>")
