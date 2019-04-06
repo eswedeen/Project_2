@@ -1,58 +1,44 @@
 // Default Map Settings
 var defaultCenter = [45, 0];
 var defaultZoom = 2;
-//var bounds = L.latLngBounds([28.70, -127.50],[48.85, -55.90])
 
-// Year Drop Down Menu 
-var myselect = document.getElementById("year"),
-    startYear = new Date('1991').getFullYear()
-    count = 28;
-
-(function(select, val, count) {
-  do {
-    select.add(new Option(val++, count--), null);
-  } while (count);
-})(myselect, startYear, count);
-
-// function init() {
-//     // Grab a reference to the dropdown select element
-//     var selector = d3.select("#year");
-  
-//     // Use the list of years to populate the select options
-//     d3.json("/years").then((yearValues) => {
-//       yearValues.forEach((year) => {
-//         selector
-//           .append("option")
-//           .text(year)
-//           .property("value", year);
-//       });
-  
-//       // Use the first years from the list to build the initial plots
-//       const firstYear = yearValues[0];
-//       buildMap(firstYear);
-//       buildPie(firstYear);
-//       buildBar(firstYear);
-//       chooseColor();
-//     });
-//   }
-
-
-
-// FUNCTION: To initialize dashboard
+// FUNCTION: Initialize Dashboard
 function init() {
-    //Get Geo JSON Data
+    
+    // Reference to Dropdown "year" Selection
+    var selector = d3.select("#year");
+  
+    // Use "/years" Route to Populate Dropdown
+    d3.json("/years", function(yearValues) {
+      yearValues.forEach((year) => {
+        selector
+          .append("option")
+          .text(year)
+          .property("value", year);
+      });
+  
+    // Load geoJSON Data into Leaflet Map
     d3.json("/geojson", function(data) {
-        //Load Geo JSON Data and Build Map
-    buildMap(data);
-    buildPie();
-    buildBar();
-    //chooseColor(); 
+        buildMap(data);
     });
-}
+        // Use the First Year from Dropdown for Initial Plots
+        const firstYear = yearValues[0];
+        buildPie(firstYear);
+        buildBar(firstYear);
+        //chooseColor();
+    });
+  }
 
-// FUNCTION: buildMap
+  // When Year Selection Changes -> Rebuild Plots
+  function optionChanged(newYear) {
+      buildPie(newYear);
+      buildBar(newYear);
+  }
+
+// FUNCTION: Build Leaflet Map
 function buildMap(data) {
-    // Create the tile layer that will be the background of our map
+
+    // Create the Tile Layer that Will be the Background of the Map
     var worldMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
         attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
         maxZoom: 18,
@@ -60,14 +46,14 @@ function buildMap(data) {
         accessToken: API_KEY
     });
 
-    // Create the map object with options
+    // Create the Map Object with Options
     var map = L.map("map-id", {
         center: defaultCenter,
         zoom: defaultZoom,
         layers: [worldMap]
     });
 
-    // format and load the GeoJSON data
+    // Format and Load the GeoJSON Data
     var myCustomStyle = {
         stroke: true,
         fill: true,
@@ -80,12 +66,12 @@ function buildMap(data) {
         style: myCustomStyle
     }).addTo(map);
 
-    // Create baseMaps object to hold the lightmap layer
+    // Create baseMaps to Hold the "Lightmap" Layer
     baseMaps = {
         "World Map": worldMap
         
     };
-    // Create overlayMaps object to hold the Country Data
+    // Create OverlayMaps to Add GeoJSON Layer
     var overlayMaps = {
         "Production by Country": countryMap
     };
@@ -93,6 +79,74 @@ function buildMap(data) {
     L.control.layers(baseMaps, overlayMaps).addTo(map);
 };
 
+
+// FUNCTION: Build Pie Chart from Region Data
+function buildPie(year) {
+    
+    d3.json(`/regions/${year}`, function(data) {
+        
+        var TEPList = data.yearKey[0];
+        // console.log(year);
+        // console.log(TEPList);
+
+        d3.json(`/regions`, function(regions) {
+            // console.log(regions);
+            // console.log(TEPList);
+
+            var pieTrace = {
+                values: TEPList,
+                labels: regions,
+                hoverinfo: regions,
+                type: 'pie'
+              };
+          
+              var pieData = [pieTrace];
+          
+              var pieLayout = {
+                 title: "Total Energy Production (MToE) "
+              }
+          
+              Plotly.newPlot('region-pie', pieData, pieLayout);
+
+        });
+        
+    });
+}
+
+// FUNCTION: Build Bar Chart from Country Data
+function buildBar(year) {
+        
+    d3.json(`/countries/${year}`, function(data) {
+        
+        var TEPList = data.yearKey[0];
+
+        // console.log(data);  
+        // console.log(TEPList);
+
+        d3.json(`/countries`, function(countries) {
+            // console.log(countries);
+            // console.log(TEPList);
+
+            var barTrace = {
+                x: countries,
+                y: TEPList,
+                text: countries,
+                
+                type: "bar",
+              };
+          
+              var barData = [barTrace];
+          
+              var barLayout = {
+                 title: "Total Energy Production (MToE) "
+              }
+          
+              Plotly.newPlot('country-bar', barData, barLayout);
+
+        });
+        
+    });
+}
 
 // FUNCTION: Coloring for country geojson fill
 // function chooseColor() {
@@ -143,81 +197,6 @@ function buildMap(data) {
 //             return colorList[i];
 //     }
 // }
-
-// FUNCTION: To build charts
-function buildPie() {
-    // get year value from dropdown using d3
-
-    // var year = d3.select("#year").value;
-    var year = 1990;
-    
-    d3.json(`/regions/${year}`, function(data) {
-        
-        var TEPList = data.yearKey[0];
-        // console.log(year);
-        // console.log(TEPList);
-
-        d3.json(`/regions`, function(regions) {
-            // console.log(regions);
-            // console.log(TEPList);
-
-            var pieTrace = {
-                values: TEPList,
-                labels: regions,
-                hoverinfo: regions,
-                type: 'pie'
-              };
-          
-              var pieData = [pieTrace];
-          
-              var pieLayout = {
-                 title: "Total Energy Production (MToE) "
-              }
-          
-              Plotly.newPlot('region-pie', pieData, pieLayout);
-
-        });
-        
-    });
-}
-
-function buildBar() {
-    // get year value from dropdown using d3
-    // var year = d3.select("#year").node().value;
-    var year = 1990;
-    
-    d3.json(`/countries/${year}`, function(data) {
-        
-        var TEPList = data.yearKey[0];
-
-        // console.log(year);
-        // console.log(data);  
-        // console.log(TEPList);
-
-        d3.json(`/countries`, function(countries) {
-            // console.log(countries);
-            // console.log(TEPList);
-
-            var barTrace = {
-                x: countries,
-                y: TEPList,
-                text: countries,
-                
-                type: "bar",
-              };
-          
-              var barData = [barTrace];
-          
-              var barLayout = {
-                 title: "Total Energy Production (MToE) "
-              }
-          
-              Plotly.newPlot('country-bar', barData, barLayout);
-
-        });
-        
-    });
-}
 
 
 // Initialize Dashboard

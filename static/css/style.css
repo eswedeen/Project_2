@@ -13,3 +13,12 @@
   height: 400px;
 }
 /* .leaflet-container{background-color:#c5e8ff;} */
+
+#yearLabel {
+  color: white;
+}
+
+#someform {
+  margin-right: 10px;
+}
+
