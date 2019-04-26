@@ -25,7 +25,6 @@ function init() {
         const firstYear = yearValues[0];
         buildPie(firstYear);
         buildBar(firstYear);
-        //chooseColor();
     });
   }
 
@@ -33,6 +32,9 @@ function init() {
   function optionChanged(newYear) {
       buildPie(newYear);
       buildBar(newYear);
+      buildMap(newYear);
+          
+    
   }
 
 // FUNCTION: Build Leaflet Map
@@ -57,7 +59,7 @@ function buildMap(data) {
     var myCustomStyle = {
         stroke: true,
         fill: true,
-        fillColor: '#0000ff',
+        fillColor: chooseColor(year),
         fillOpacity: 0.75    
     }
     
@@ -149,54 +151,62 @@ function buildBar(year) {
 }
 
 // FUNCTION: Coloring for country geojson fill
-// function chooseColor() {
+function chooseColor(year) {
+    
+    var countryList = [];
+    var geoNameList = [];
+    var TEPList = [];
+    
+    var year = d3.select("#year");
+    console.log(year);
 
-//     var countryList = [];
-//     var geoNameList = [];
-//     var TEPList = [];
-//     var year = 1990;
+    d3.json("/countries", function(countries) {
+        console.log(countries);
 
-//     d3.json("/countries", function(countries) {
-//         console.log(countries);
+    });
 
-//     });
-
-//     d3.json("/geojson", function(geoNameList, geoData) {
-//         geoData.features.forEach(function(geoNameList, feature) {
+    // d3.json("/geojson", function(geoNameList, geoData) {
+    //     geoData.features.forEach(function(geoNameList, feature) {
             
-//             var geoName = feature.properties.name;
-//             geoNameList.push(geoName);
-//             console.log(geoNameList);       
-//         });
-//     });
+    //         var geoName = feature.properties.name;
+    //         geoNameList.push(geoName);
+    //         console.log(geoNameList);       
+    //     });
+    // });
 
-//     d3.json(`/countries/${year}`, function(data) {
-//        console.log(data);    
-//         var TEPValues = data.yearKey[0];
-                
-//     });
+    d3.json(`/countries/${year}`, function(data) {
+        var TEPValues = data.yearKey[0];
+        console.log(TEPValues);     
+    });
+
+    switch (name) {
+        case "Bahamas":
+            return "yellow";
+        case "China":
+            return "red";
+    }
         
-//     // list of country names from TEP data
-//     console.log(countryList);
+    // // list of country names from TEP data
+    // console.log(countryList);
 
-//     // list of country names from geojson data
-//     console.log(geoNameList);
+    // // list of country names from geojson data
+    // console.log(geoNameList);
 
-//     // list of TEP values for each country
-//     console.log(TEPList);
+    // // list of TEP values for each country
+    // console.log(TEPList);
     
-// }
-//     // get TEPList max
 
-//     var TEPMax
-//     var colorList = ['#ffffe0', '#ffe3af', '#ffc58a', '#ffa474', '#fa8266', '#ed645c', '#db4551', '#c52940', '#aa0e27', '#8b0000'];
+    // // get TEPList max
+
+    // var TEPMax
+    // var colorList = ['#ffffe0', '#ffe3af', '#ffc58a', '#ffa474', '#fa8266', '#ed645c', '#db4551', '#c52940', '#aa0e27', '#8b0000'];
     
-//     for (var i = 0; i++; 9) {
-//         // case TEPMax*i/10 < TEPList[i] < TEPMax*(i+1)/10:
-//         case TEPList[i] > (TEPMax*i/10) && TEPList[i] < (TEPMax*(i+1)/10):
-//             return colorList[i];
-//     }
-// }
+    // for (var i = 0; i++; 9) {
+    //     // case TEPMax*i/10 < TEPList[i] < TEPMax*(i+1)/10:
+    //     case TEPList[i] > (TEPMax*i/10) && TEPList[i] < (TEPMax*(i+1)/10):
+    //         return colorList[i];
+    // }
+}
 
 
 // Initialize Dashboard
