@@ -2,6 +2,27 @@
 var defaultCenter = [45, 0];
 var defaultZoom = 2;
 
+    // Create the Tile Layer that Will be the Background of the Map
+    var worldMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+        maxZoom: 18,
+        id: "mapbox.light",
+        accessToken: API_KEY
+    });
+
+    // Create the Map Object with Options
+    var map = L.map("map-id", {
+        center: defaultCenter,
+        zoom: defaultZoom,
+        layers: [worldMap]
+    });
+
+
+
+
+
+    
+
 // FUNCTION: Initialize Dashboard
 function init() {
     
@@ -33,52 +54,37 @@ function init() {
       buildPie(newYear);
       buildBar(newYear);
       buildMap(newYear);
-          
-    
   }
 
 // FUNCTION: Build Leaflet Map
-function buildMap(data) {
-
-    // Create the Tile Layer that Will be the Background of the Map
-    var worldMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-        attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-        maxZoom: 18,
-        id: "mapbox.light",
-        accessToken: API_KEY
-    });
-
-    // Create the Map Object with Options
-    var map = L.map("map-id", {
-        center: defaultCenter,
-        zoom: defaultZoom,
-        layers: [worldMap]
-    });
-
-    // Format and Load the GeoJSON Data
-    var myCustomStyle = {
-        stroke: true,
-        fill: true,
-        fillColor: chooseColor(year),
-        fillOpacity: 0.75    
-    }
-    
-    var countryMap = L.geoJson(data, {
-        clickable: false,
-        style: myCustomStyle
-    }).addTo(map);
-
-    // Create baseMaps to Hold the "Lightmap" Layer
-    baseMaps = {
-        "World Map": worldMap
+function buildMap(year) {
+    d3.json("/geojson", function(data) {
         
-    };
-    // Create OverlayMaps to Add GeoJSON Layer
-    var overlayMaps = {
-        "Production by Country": countryMap
-    };
-    // Create Layer Control
-    L.control.layers(baseMaps, overlayMaps).addTo(map);
+        // Format and Load the GeoJSON Data
+        var myCustomStyle = {
+            stroke: true,
+            fill: true,
+            fillColor: chooseColor(year),
+            fillOpacity: 0.75    
+        }
+        
+        var countryMap = L.geoJson(data, {
+            clickable: false,
+            style: myCustomStyle
+        }).addTo(map);
+
+        // Create baseMaps to Hold the "Lightmap" Layer
+        baseMaps = {
+            "World Map": worldMap
+            
+        };
+        // Create OverlayMaps to Add GeoJSON Layer
+        var overlayMaps = {
+            "Production by Country": countryMap
+        };
+        // Create Layer Control
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+    });
 };
 
 
